@@ -1,0 +1,26 @@
+{
+  "name": "boomatik-miniverse",
+  "version": "1.0.0",
+  "description": "Boomatik AI Agent Visualization - Pixel world for BOO agents",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -n vite,server -c cyan,magenta \"vite\" \"miniverse --no-browser\"",
+    "build": "vite build",
+    "preview": "vite preview",
+    "server": "miniverse",
+    "start": "miniverse"
+  },
+  "dependencies": {
+    "@miniverse/core": "^0.2.6",
+    "@miniverse/server": "^0.2.8"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0",
+    "typescript": "^5.4.0",
+    "vite": "^5.4.0"
+  },
+  "keywords": ["boomatik", "ai-agents", "miniverse", "visualization"],
+  "author": "Boomatik <support@boomatik.com>",
+  "license": "MIT"
+}
