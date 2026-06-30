@@ -2,6 +2,17 @@
 
 A pixel world for visualizing and monitoring Boomatik's AI agent team in real-time.
 
+## Arquitectura (diagrama)
+
+Mapa visual de la arquitectura de la aplicación para ver el conjunto de un vistazo:
+frontend Vite, motor de render `@miniverse/core`, datos estáticos del mundo y la
+API REST de agentes servida por la CLI `@miniverse/server`.
+
+- **Diagrama:** [`docs/boomatik-miniverse-architecture.excalidraw`](docs/boomatik-miniverse-architecture.excalidraw)
+- **Cómo verlo:** arrastra el archivo a [https://excalidraw.com](https://excalidraw.com),
+  o ábrelo en VS Code con la extensión [Excalidraw](https://marketplace.visualstudio.com/items?itemName=pomdtr.excalidraw-editor).
+- **Regenerar:** `python docs/gen_excalidraw.py`
+
 ## Live at: team.boomatik.com (coming soon)
 
 ## BOO Agent Team
