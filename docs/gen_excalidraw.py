@@ -176,71 +176,83 @@ def main():
     elements.append(text(40, 24, "Boomatik Miniverse — Arquitectura", size=26,
                          color=C1, font=FONT_CODE))
     elements.append(text(40, 60,
-                         "Visualizacion pixel-art del equipo de agentes BOO (Vite + TypeScript).",
+                         "Visualizacion pixel-art del equipo de agentes BOO (Vite + TypeScript). "
+                         "App local: sin BD y sin LLM dentro del repo.",
                          size=13, color="#52525b", font=FONT_HAND))
 
     # --- Lane 1: Frontend (Vite) ---
-    elements += lane(40, 100, 520, 360, "FRONTEND  ·  Vite + TypeScript", color=C1)
+    elements += lane(40, 100, 520, 360, "FRONTEND  ·  Vite + TypeScript  ·  :5173", color=C1)
 
     n_index = node(70, 150, 200, 90, "index.html",
                    "HUD: cabecera, marcador,\nreloj, #app canvas mount", color=C1)
     n_main = node(70, 270, 200, 130, "src/main.ts",
-                  "Entry. Genera tiles + sprites\nen canvas, monta Miniverse,\nfija polling /api/agents 3s", color=C1)
-    n_core = node(330, 200, 200, 120, "@miniverse/core",
-                  "Motor de render pixel.\nMiniverse(): escena, tiles,\nsprites, citizens, signal REST", color=C2)
+                  "Entry. Genera tiles + sprites\nen Canvas, define escena 20x14,\nmonta Miniverse, signal REST 3s", color=C1)
+    n_core = node(330, 200, 200, 120, "@miniverse/core  ^0.2.6",
+                  "Motor de render pixel (Canvas).\nMiniverse(): escena, tiles,\nsprites, citizens, signal REST", color=C2)
     elements += n_index + n_main + n_core
 
-    # --- Lane 2: Datos estaticos ---
-    elements += lane(40, 480, 520, 150, "DATOS ESTATICOS  ·  en repo", color=C3)
-    n_world = node(70, 520, 220, 90, "public/worlds/boomatik/\nworld.json",
-                   "Grid 20x14, citizens,\nwanderPoints, props", color=C3)
-    n_assets = node(320, 520, 210, 90, "tiles + sprites",
-                    "Generados en runtime con\nCanvas API (sin imagenes)", color=C3)
+    # Build node (bridge front -> deploy)
+    n_build = node(330, 350, 200, 80, "vite build -> dist/",
+                   "bundle estatico (deploy)", color=C1)
+    elements += n_build
+
+    # --- Lane 2: Datos del mundo (en codigo, NO hay world.json) ---
+    elements += lane(40, 480, 520, 170, "DATOS DEL MUNDO  ·  en codigo (estaticos)", color=C3)
+    n_world = node(70, 520, 220, 110, "sceneConfig + citizens",
+                   "Definidos en src/main.ts:\ngrid 20x14, locations, 5 citizens.\nNO existe world.json en el repo", color=C3)
+    n_assets = node(320, 520, 210, 110, "tiles + sprites",
+                    "Procedurales en runtime con\nCanvas toDataURL() — sin\nimagenes ni assets externos", color=C3)
     elements += n_world + n_assets
 
     # --- Lane 3: Backend (miniverse CLI) ---
-    elements += lane(620, 100, 520, 530, "BACKEND  ·  @miniverse/server (CLI)", color=C2)
+    elements += lane(620, 100, 520, 545, "BACKEND  ·  @miniverse/server (CLI)  ·  :4321", color=C2)
 
-    n_server = node(650, 160, 230, 130, "miniverse (CLI)",
-                    "Servidor REST de agentes\nlocalhost:4321\nscript npm: dev / server", color=C2)
-    n_api = node(650, 320, 460, 170,
-                 "API REST",
-                 "POST /api/heartbeat  (registra/actualiza)\n"
-                 "GET  /api/agents     (lista estado)\n"
-                 "GET  /api/info\n"
-                 "POST /api/act        (speak / mensaje)", color=C2)
+    n_server = node(650, 160, 230, 130, "miniverse (CLI)  ^0.2.8",
+                    "Servidor REST de agentes\nlocalhost:4321 (estado en memoria)\nnpm scripts: dev / server / start", color=C2)
+    n_api = node(650, 320, 460, 185,
+                 "API REST  ·  estado de agentes",
+                 "POST /api/heartbeat  registra / actualiza estado\n"
+                 "GET  /api/agents     lista (lo consume el front)\n"
+                 "GET  /api/info       metadatos del servidor\n"
+                 "POST /api/act        speak / accion (mensaje)", color=C2)
     elements += n_server + n_api
 
-    n_hooks = node(910, 160, 200, 130, "Claude Code hooks",
-                   "settings.json:\nPreToolUse -> working\nPostToolUse -> thinking\nStop -> idle", color=C1)
+    n_hooks = node(910, 160, 200, 150, "Claude Code  (externo)",
+                   "Hooks en ~/.claude/settings.json:\nPreToolUse  -> working\nPostToolUse -> thinking\nStop        -> idle", color=C1)
     elements += n_hooks
 
-    # --- Lane 4: Build / deploy ---
-    elements += lane(620, 480, 520, 150, "BUILD / DEPLOY", color=C3)
-    n_build = node(650, 520, 200, 90, "vite build -> dist/",
-                   "bundle estatico", color=C3)
-    n_deploy = node(890, 520, 220, 90, "team.boomatik.com",
-                    "Railway / Vercel / VPS\n(coming soon)", color=C3)
-    elements += n_build + n_deploy
+    # --- Lane 4: Cloud / Infraestructura (honesto: local-first) ---
+    elements += lane(620, 665, 520, 150, "CLOUD / INFRAESTRUCTURA", color=C3)
+    n_local = node(650, 705, 200, 90, "Local-first",
+                   "Todo corre en localhost.\nSin cloud, sin BD, sin Redis,\nsin colas ni servicios externos", color=C3)
+    n_deploy = node(890, 705, 220, 90, "team.boomatik.com",
+                    "Deploy opcional (estatico):\nVercel / VPS / Railway\n(coming soon)", color=C3)
+    elements += n_local + n_deploy
 
     # --- Arrows ---
     elements += arrow(n_index[0], n_main[0], color=C1)
     elements += arrow(n_main[0], n_core[0], color=C1, label="monta")
-    elements += arrow(n_world[0], n_main[0], color=C3, label="carga", dash="dotted")
+    elements += arrow(n_world[0], n_main[0], color=C3, label="define", dash="dotted")
     elements += arrow(n_assets[0], n_main[0], color=C3, dash="dotted")
-    elements += arrow(n_core[0], n_api[0], color=C2, label="poll 3s /api/agents")
+    elements += arrow(n_core[0], n_api[0], color=C2, label="GET /api/agents 3s")
     elements += arrow(n_server[0], n_api[0], color=C2, label="sirve")
-    elements += arrow(n_hooks[0], n_api[0], color=C1, label="heartbeat", dash="dashed")
-    elements += arrow(n_main[0], n_build[0], color=C3, dash="dotted")
-    elements += arrow(n_build[0], n_deploy[0], color=C3)
+    elements += arrow(n_hooks[0], n_api[0], color=C1, label="POST /api/heartbeat", dash="dashed")
+    elements += arrow(n_main[0], n_build[0], color=C1, dash="dotted")
+    elements += arrow(n_build[0], n_deploy[0], color=C3, dash="dotted")
 
-    # Honest note about scope
-    elements.append(text(40, 660,
-        "Nota de alcance honesta: proyecto pequeno. Sin DB, sin ORM, sin migraciones,\n"
-        "sin llamadas a LLM dentro del repo. Frontend Vite consume una API REST local\n"
-        "servida por la CLI de @miniverse/server. Los agentes BOO se muestran como\n"
-        "jugadores (tema \"BOO FC stadium\"); su estado lo actualizan hooks de Claude Code.",
-        size=12, color="#52525b", font=FONT_HAND))
+    # Honest scope note
+    elements.append(text(40, 680,
+        "Nota de alcance honesta: proyecto pequeno y local. Sin BD, ORM, migraciones,\n"
+        "colas ni llamadas a LLM dentro del repo. El front Vite consume una API REST\n"
+        "local de @miniverse/server. Los 5 citizens (tema \"BOO FC stadium\") muestran\n"
+        "el estado de los agentes BOO; quien lo actualiza es Claude Code via hooks.",
+        size=12, color="#52525b", font=FONT_HAND, w=540))
+
+    # Models note
+    elements.append(text(40, 770,
+        "Modelos: ninguno fijado en runtime. 'claude-opus' solo aparece como ID de\n"
+        "agente en el README; los agentes los dirige Claude Code (externo), no el repo.",
+        size=11, color=C1, font=FONT_HAND, w=540))
 
     # Strip helper-only keys before serialising
     for el in elements:
